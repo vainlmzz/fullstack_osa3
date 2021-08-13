@@ -7,12 +7,13 @@ if (process.argv.length<3) {
 
 
 
-const password = process.argv[2]
+
 const newName = process.argv[3]
 const newNumber = process.argv[4]
 
-const url =
-`mongodb+srv://fullstack:${password}@cluster0.4dbqx.mongodb.net/phonebook?retryWrites=true&w=majority`
+const url = process.env.MONGODB_URI
+
+console.log('connecting to', url)
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
 
