@@ -15,7 +15,6 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
-<<<<<<< HEAD
   
 
   if (error.name === 'CastError') {
@@ -26,14 +25,6 @@ const errorHandler = (error, request, response, next) => {
   }
   next(error)
   
-=======
-
-  if (error.name === 'CastError') {
-    return response.status(400).send({ error: 'malformatted id' })
-  }
-
-  next(error)
->>>>>>> 3d1ad64304227ed203db7c7912428aee19691d28
 }
 
 app.get('/api/persons', (request, response, next) => {
@@ -64,16 +55,9 @@ app.get('/info', (req, res) => {
 
 
 
-<<<<<<< HEAD
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
   const nimi = Person.find(body.name)
-=======
-app.post('/api/persons', (request, response) => {
-  const body = request.body
-  const n = body.name
-  const exists = Person.find({n:{$exists:true}})
->>>>>>> 3d1ad64304227ed203db7c7912428aee19691d28
   
 
   if (!body.name || !body.number) {
@@ -81,17 +65,7 @@ app.post('/api/persons', (request, response) => {
     error: 'add missing name/number' 
     })  
   }
-<<<<<<< HEAD
   
-=======
-
-  if (exists) {
-    return response.status(409).json({ 
-        error: 'name must be unique' 
-    })
-    }
-
->>>>>>> 3d1ad64304227ed203db7c7912428aee19691d28
 
   const person = new Person({
     name: body.name,
@@ -101,28 +75,12 @@ app.post('/api/persons', (request, response) => {
   person.save()
     .then(savedPerson => {
     response.json(savedPerson)
-<<<<<<< HEAD
     })
     .catch(error => next(error))
     
-=======
-  })
 })
 
 
-app.delete('/api/persons/:id', (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
->>>>>>> 3d1ad64304227ed203db7c7912428aee19691d28
-})
-
-app.put('/api/persons/:id', (request, response, next) => {
-  const body = request.body
-
-<<<<<<< HEAD
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
     .then(result => {
@@ -136,8 +94,6 @@ app.put('/api/persons/:id', (request, response, next) => {
 
   const body = request.body
 
-=======
->>>>>>> 3d1ad64304227ed203db7c7912428aee19691d28
   const person = {
     name: body.name,
     number: body.number,
