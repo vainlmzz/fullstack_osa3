@@ -15,12 +15,16 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
+  
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } 
+  else if (error.name === 'ValidationError') {
+    return response.status(409).json( {error: error.message})
   }
-
   next(error)
+  
 }
 
 app.get('/api/persons', (request, response, next) => {
@@ -51,10 +55,9 @@ app.get('/info', (req, res) => {
 
 
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
-  const n = body.name
-  const exists = Person.find({n:{$exists:true}})
+  const nimi = Person.find(body.name)
   
 
   if (!body.name || !body.number) {
@@ -62,22 +65,19 @@ app.post('/api/persons', (request, response) => {
     error: 'add missing name/number' 
     })  
   }
-
-  if (exists) {
-    return response.status(409).json({ 
-        error: 'name must be unique' 
-    })
-    }
-
+  
 
   const person = new Person({
     name: body.name,
     number: body.number
   })
 
-  person.save().then(savedPerson => {
+  person.save()
+    .then(savedPerson => {
     response.json(savedPerson)
-  })
+    })
+    .catch(error => next(error))
+    
 })
 
 
@@ -90,6 +90,8 @@ app.delete('/api/persons/:id', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
+
+
   const body = request.body
 
   const person = {
