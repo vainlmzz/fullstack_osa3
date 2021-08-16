@@ -102,6 +102,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
   Person.findByIdAndUpdate(request.params.id, person, { runValidators: true, new: true, context: 'query'})
     .then((updatedPerson) => {
+      if(updatedPerson === null) {response.status(409).json( {error: "Yhteystieto on valitettavasti poistettu jo, päivitä sivu"})}
       response.json(updatedPerson) })
       
     .catch(error => next(error))
