@@ -23,6 +23,7 @@ const errorHandler = (error, request, response, next) => {
   else if (error.name === 'ValidationError') {
     return response.status(409).json( {error: error.message})
   }
+  
   next(error)
   
 }
@@ -99,10 +100,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     number: body.number,
   }
 
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedPerson => {
-      response.json(updatedPerson)
-    })
+  Person.findByIdAndUpdate(request.params.id, person, { runValidators: true, new: true, context: 'query'})
+    .then((updatedPerson) => {
+      response.json(updatedPerson) })
+      
     .catch(error => next(error))
 })
 
@@ -115,5 +116,5 @@ const PORT = process.env.PORT
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
-       
- 
+
+
